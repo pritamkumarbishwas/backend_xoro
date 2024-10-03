@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const { Schema, model } = mongoose;
 
-const categorySchema = new Schema(
+const productsSchema = new Schema(
     {
         title: {
             type: String,
@@ -37,7 +37,7 @@ const categorySchema = new Schema(
     { collection: 'Category', timestamps: true }
 );
 
-categorySchema.pre('save', function (next) {
+productsSchema.pre('save', function (next) {
     if (this.isNew || this.isModified('title')) {
         this.title = this.title.charAt(0).toUpperCase() + this.title.slice(1);
     }
@@ -50,11 +50,11 @@ const filterDeleted = function (next) {
     next();
 };
 
-categorySchema.pre('find', filterDeleted);
-categorySchema.pre('findOne', filterDeleted);
-categorySchema.pre('findOneAndUpdate', filterDeleted);
-categorySchema.pre('findByIdAndUpdate', filterDeleted);
+productsSchema.pre('find', filterDeleted);
+productsSchema.pre('findOne', filterDeleted);
+productsSchema.pre('findOneAndUpdate', filterDeleted);
+productsSchema.pre('findByIdAndUpdate', filterDeleted);
 
-const Category = model('Category', categorySchema);
+const Product = model('Products', productsSchema);
 
-export default Category;
+export default Product;

@@ -48,7 +48,7 @@ const getBannerById = asyncHandler(async (req, res) => {
 //  updating a banner by ID
 const updateBannerById = asyncHandler(async (req, res) => {
     const avatarLocalPath = req.file?.path;  // Get the path of the uploaded file
- 
+
     const updatedBanner = await BannerService.updateBannerById(req.params.id, req.body, avatarLocalPath);
 
     if (!updatedBanner) {
