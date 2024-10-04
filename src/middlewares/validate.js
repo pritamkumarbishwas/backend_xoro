@@ -10,14 +10,18 @@ import { ApiError } from "../utils/ApiError.js";
  */
 const validate = (schema) => (req, res, next) => {
     // Request body should be JSON, if present
-    if (Object.keys(req.body).length !== 0 && !req.is("application/json")) {
+    if (Object.keys(req.body).length !== 0 &&
+        !req.is("application/json") &&
+        !req.is("multipart/form-data")) {
+
         return next(
             new ApiError(
                 httpStatus.UNSUPPORTED_MEDIA_TYPE,
-                "Supports JSON request body only"
+                "Supports only JSON and multipart/form-data request bodies"
             )
         );
     }
+
 
     // cherry-pick from the input schema ["params", "query", "body"] fields
     const validSchema = pick(schema, ["params", "query", "body"]);

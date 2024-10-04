@@ -3,31 +3,45 @@ import { ApiError } from "../../utils/ApiError.js";
 import httpStatus from 'http-status';
 import { ApiResponse } from '../../utils/ApiResponse.js';
 import { asyncHandler } from "../../utils/asyncHandler.js";
+import { isCacheValid, getCache, setCache, clearCacheByKey } from '../../utils/cache.js'; // Import updated cache utilities
 
 // Creating a new Category
 const createCategory = asyncHandler(async (req, res) => {
-    const avatarLocalPath = req.file?.path;  // Get the path of the uploaded file
-
-    // Check if the image file exists
-    if (!avatarLocalPath) {
-        throw new ApiError(httpStatus.BAD_REQUEST, "Image file is missing");
+    const imageLocalPath = req.file?.path; // Get the path of the uploaded file
+    if (!imageLocalPath) {
+        throw new ApiError(httpStatus.BAD_REQUEST, "Image file is required.");
     }
 
-    // Pass both the form data (req.body) and the avatarLocalPath to the service
-    const newCategory = await CategoryService.createCategory(req.body, avatarLocalPath);
+    const newCategory = await CategoryService.createCategory(req, imageLocalPath);
 
     if (!newCategory) {
-        throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, "Failed to create Category");
+        throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, "Failed to create category.");
     }
+
+    // Clear the categories cache after creating a new category
+    clearCacheByKey('categories');
 
     return res.status(httpStatus.OK).json(
         new ApiResponse(httpStatus.OK, newCategory, "Category created successfully")
     );
 });
 
-// Fetching all active Categories
+// Fetching all Categories
 const getAllCategories = asyncHandler(async (req, res) => {
+    // Check if categories are cached and valid
+    if (isCacheValid('categories')) {
+        const cachedCategories = getCache('categories');
+        return res.status(httpStatus.OK).json(
+            new ApiResponse(httpStatus.OK, cachedCategories, "Categories fetched successfully")
+        );
+    }
+
+    // If not cached, fetch from the service
     const categories = await CategoryService.getAllCategories();
+    
+    // Store fetched data in cache
+    setCache('categories', categories);
+
     return res.status(httpStatus.OK).json(
         new ApiResponse(httpStatus.OK, categories, "Categories fetched successfully")
     );
@@ -37,7 +51,7 @@ const getAllCategories = asyncHandler(async (req, res) => {
 const getCategoryById = asyncHandler(async (req, res) => {
     const category = await CategoryService.getCategoryById(req.params.id);
     if (!category) {
-        throw new ApiError(httpStatus.NOT_FOUND, 'Category not found');
+        throw new ApiError(httpStatus.NOT_FOUND, "Category not found");
     }
     return res.status(httpStatus.OK).json(
         new ApiResponse(httpStatus.OK, category, "Category fetched successfully")
@@ -46,14 +60,17 @@ const getCategoryById = asyncHandler(async (req, res) => {
 
 // Updating a Category by ID
 const updateCategoryById = asyncHandler(async (req, res) => {
-    const avatarLocalPath = req.file?.path;  // Get the path of the uploaded file
+    const imageLocalPath = req.file?.path; // Get the path of the uploaded file
 
-    // Update category with both form data and avatar path if provided
-    const updatedCategory = await CategoryService.updateCategoryById(req.params.id, req.body, avatarLocalPath);
+    const updatedCategory = await CategoryService.updateCategoryById(req.params.id, req.body, imageLocalPath);
 
     if (!updatedCategory) {
-        throw new ApiError(httpStatus.NOT_FOUND, 'Category not found');
+        throw new ApiError(httpStatus.NOT_FOUND, "Category not found");
     }
+
+    // Clear the categories cache after updating a category
+    clearCacheByKey('categories');
+
     return res.status(httpStatus.OK).json(
         new ApiResponse(httpStatus.OK, updatedCategory, "Category updated successfully")
     );
@@ -63,8 +80,12 @@ const updateCategoryById = asyncHandler(async (req, res) => {
 const softDeleteCategoryById = asyncHandler(async (req, res) => {
     const deletedCategory = await CategoryService.softDeleteCategoryById(req.params.id);
     if (!deletedCategory) {
-        throw new ApiError(httpStatus.NOT_FOUND, 'Category not found');
+        throw new ApiError(httpStatus.NOT_FOUND, "Category not found");
     }
+
+    // Clear the categories cache after deleting a category
+    clearCacheByKey('categories');
+
     return res.status(httpStatus.OK).json(
         new ApiResponse(httpStatus.OK, deletedCategory, "Category deleted successfully")
     );
