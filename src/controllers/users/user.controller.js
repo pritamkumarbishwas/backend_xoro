@@ -6,10 +6,10 @@ import { asyncHandler } from "../../utils/asyncHandler.js";
 
 // User login - generates OTP
 const userLogin = asyncHandler(async (req, res, next) => {
-    const { mobileNo } = req.body;
+    const { phone } = req.body;
 
     // Generate OTP and get user info
-    const { otp, user } = await UserService.generateOtp(mobileNo);
+    const { otp, user } = await UserService.generateOtp(phone);
 
     // Handle case where OTP generation failed
     if (!otp) {
@@ -26,10 +26,10 @@ const userLogin = asyncHandler(async (req, res, next) => {
 
 // OTP verification and login
 const otpVerify = asyncHandler(async (req, res, next) => {
-    const { mobileNo, otp, fcmToken } = req.body;
+    const { phone, otp, fcmToken } = req.body;
 
     // Verify OTP and log in user
-    const response = await UserService.verifyOtpAndLogin({ mobileNo, otp, fcmToken });
+    const response = await UserService.verifyOtpAndLogin({ phone, otp, fcmToken });
 
     // Send response with user data and tokens
     return res.status(httpStatus.OK).json(new ApiResponse(httpStatus.OK, response, "User logged in successfully"));

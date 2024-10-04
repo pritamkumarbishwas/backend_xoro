@@ -5,16 +5,16 @@ import { generateAccessAndRefreshTokens } from "../utils/tokenUtils.js";
 import { uploadOnCloudinary, deleteFromCloudinary } from '../utils/cloudinary.js';
 
 // Generate OTP for login
-const generateOtp = async (mobileNo) => {
+const generateOtp = async (phone) => {
     const otp = Math.floor(100000 + Math.random() * 900000); // 6-digit OTP
     const expiresAt = Date.now() + 10 * 60 * 1000; // OTP valid for 5 minutes
 
     // Try to find the user by mobile number
-    let user = await User.findOne({ mobileNo });
+    let user = await User.findOne({ phone });
 
     // If user does not exist, create a new user
     if (!user) {
-        user = new User({ mobileNo, otp: { code: otp, expiresAt } });
+        user = new User({ phone, otp: { code: otp, expiresAt } });
     } else {
         // Update existing user with new OTP and expiration time
         user.otp = { code: otp, expiresAt };
@@ -29,8 +29,8 @@ const generateOtp = async (mobileNo) => {
 
 
 // Verify OTP and log in user
-const verifyOtpAndLogin = async ({ mobileNo, otp, fcmToken }) => {
-    const user = await User.findOne({ mobileNo });
+const verifyOtpAndLogin = async ({ phone, otp, fcmToken }) => {
+    const user = await User.findOne({ phone });
 
     // Check if the user exists
     if (!user) {

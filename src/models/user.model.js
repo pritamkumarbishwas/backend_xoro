@@ -20,10 +20,10 @@ const userSchema = new Schema(
             default: null,
             index: true, // Single index for email
         },
-        mobileNo: {
+        phone: {
             type: String, // String to handle leading zeroes
             default: null,
-            index: true, // Single index for mobileNo
+            index: true, // Single index for phone
         },
         gender: {
             type: String,
@@ -115,8 +115,8 @@ const userSchema = new Schema(
     }
 );
 
-// Multiple field index for firstName, email, and mobileNo
-userSchema.index({ firstName: 1, email: 1, mobileNo: 1 });
+// Multiple field index for firstName, email, and phone
+userSchema.index({ firstName: 1, email: 1, phone: 1 });
 
 // Function to generate a unique refer code
 async function generateUniqueReferCode() {

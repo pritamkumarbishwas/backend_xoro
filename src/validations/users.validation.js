@@ -5,7 +5,7 @@ import { objectId, customJoi } from './custom.validation.js';
 
 const userLogin = {
     body: Joi.object().keys({
-        mobileNo: Joi.number()
+        phone: Joi.number()
             .required()
             .messages({
                 'string.base': 'Mobile number must be a string',
@@ -17,7 +17,7 @@ const userLogin = {
 
 const verifyOtp = {
     body: Joi.object().keys({
-        mobileNo: Joi.string()
+        phone: Joi.string()
             .required()
             .messages({
                 'string.base': 'Mobile number must be a string',
