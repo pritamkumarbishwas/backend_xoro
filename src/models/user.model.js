@@ -110,9 +110,7 @@ const userSchema = new Schema(
             default: ''
         },
     },
-    {
-        timestamps: true,
-    }
+    { collection: 'User', timestamps: true }
 );
 
 // Multiple field index for firstName, email, and phone

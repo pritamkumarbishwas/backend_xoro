@@ -3,7 +3,7 @@ import * as bannerController from "../../controllers/admin/banner.controller.js"
 import { upload } from "../../middlewares/multer.middleware.js";
 import * as bannerValidation from '../../validations/banner.validation.js';
 import validate from "../../middlewares/validate.js";
-import { verifyJWT } from "../../middlewares/users.auth.middleware.js"; // Ensure the path is correct
+import { verifyJWT } from "../../middlewares/admin.auth.middleware.js"; // Ensure the path is correct
 
 const router = Router();
 

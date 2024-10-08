@@ -1,7 +1,7 @@
 import { User } from '../models/user.model.js';
 import { ApiError } from '../utils/ApiError.js';
 import httpStatus from 'http-status';
-import { generateAccessAndRefreshTokens } from "../utils/tokenUtils.js";
+import { generateUserAccessAndRefreshTokens } from "../utils/tokenUtils.js";
 import { uploadOnCloudinary, deleteFromCloudinary } from '../utils/cloudinary.js';
 
 // Generate OTP for login
@@ -53,7 +53,7 @@ const verifyOtpAndLogin = async ({ phone, otp, fcmToken }) => {
     await updateUser({ fcmToken }, user._id);
 
     // Generate access and refresh tokens
-    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
+    const { accessToken, refreshToken } = await generateUserAccessAndRefreshTokens(user._id);
 
     // Exclude sensitive information from the response
     const userData = await User.findById(user._id).select("-otp -refreshToken");
@@ -139,7 +139,7 @@ const googleLogin = async ({ email, firstName, lastName, fcmToken }) => {
     const userName = `${firstName} ${lastName}`;
     user = await createUser({ email, fcmToken, userName, firstName, lastName });
 
-    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
+    const { accessToken, refreshToken } = await generateUserAccessAndRefreshTokens(user._id);
 
     // Exclude sensitive information from the response
     const userData = await User.findById(user._id).select("-otp -refreshToken");
@@ -163,8 +163,8 @@ const facebookLogin = async ({ facebookId, firstName, lastName, fcmToken }) => {
 
     const userName = `${firstName} ${lastName}`;
     user = await createUser({ facebookId, fcmToken, userName, firstName, lastName });
-    
-    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
+
+    const { accessToken, refreshToken } = await generateUserAccessAndRefreshTokens(user._id);
 
     // Exclude sensitive information from the response
     const userData = await User.findById(user._id).select("-otp -refreshToken");

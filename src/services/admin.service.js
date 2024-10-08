@@ -1,8 +1,9 @@
-import Admin from '../models/admin.model.js';
+import { Admin } from '../models/admin.model.js';
 import { uploadOnCloudinary } from '../utils/cloudinary.js';
 import { ApiError } from '../utils/ApiError.js';
 import httpStatus from 'http-status';
-import bcrypt from 'bcryptjs'; // To hash passwords
+import bcrypt from "bcrypt"
+import { generateAdminAccessAndRefreshTokens } from "../utils/tokenUtils.js";
 
 // Helper function to check for email or phone uniqueness
 const checkUniqueFields = async (email, phone, excludeId = null) => {
@@ -24,8 +25,6 @@ const createAdmin = async (req, avatarLocalPath) => {
     // Check if email or phone already exists
     await checkUniqueFields(email, phone);
 
-    // Hash the password before saving
-    const hashedPassword = await bcrypt.hash(password, 10);
 
     // Upload the avatar to Cloudinary using the local file path
     const avatar = avatarLocalPath ? await uploadOnCloudinary(avatarLocalPath) : null;
@@ -39,9 +38,9 @@ const createAdmin = async (req, avatarLocalPath) => {
     const adminData = {
         name,
         email,
-        password: hashedPassword, // Store hashed password
+        password,
         phone,
-        role: role || 'Restaurant',  // Default to 'Restaurant' if role is not provided
+        role,  // Default to 'Restaurant' if role is not provided
         restaurant: role === 'Restaurant' ? restaurant : null,  // Only include restaurant if role is 'Restaurant'
         avatar: avatar?.url || 'default.png', // Use the uploaded avatar or default
         addedBy,
@@ -66,7 +65,7 @@ const getAllActiveAdmins = async () => {
 
 // Function to fetch an Admin by ID (excluding deleted)
 const getAdminById = async (id) => {
-    const admin = await Admin.findById(id).populate('restaurant'); // Populate restaurant details if applicable
+    const admin = await Admin.findById(id); // Populate restaurant details if applicable
 
     // Check if Admin exists
     if (!admin) {
@@ -135,11 +134,111 @@ const softDeleteAdminById = async (id) => {
     return admin; // Return the soft deleted document
 };
 
+const adminLogin = async (email, password) => {
+    // Find the admin by email
+    const admin = await Admin.findOne({ email, isDeleted: false });
+
+    // Check if the admin exists
+    if (!admin) {
+        throw new ApiError(httpStatus.UNAUTHORIZED, 'Invalid email or password');
+    }
+
+    // Verify the password using bcrypt
+    const isPasswordValid = await bcrypt.compare(password, admin.password);
+    if (!isPasswordValid) {
+        throw new ApiError(httpStatus.UNAUTHORIZED, 'Invalid email or password');
+    }
+
+    // Generate access and refresh tokens for the authenticated admin
+    const { accessToken, refreshToken } = await generateAdminAccessAndRefreshTokens(admin._id);
+
+    const adminData = await Admin.findById(admin._id).select("-password -refreshToken");
+
+    return {
+        ...adminData.toObject(),
+        accessToken,
+        refreshToken
+    };
+
+};
+
+
+const adminChangePassword = async (adminId, oldPassword, newPassword) => {
+    // Find the admin by ID
+    const admin = await Admin.findById(adminId);
+
+    // Check if the admin exists
+    if (!admin) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'Admin not found');
+    }
+
+    // Verify the old password
+    const isOldPasswordValid = await bcrypt.compare(oldPassword, admin.password);
+    if (!isOldPasswordValid) {
+        throw new ApiError(httpStatus.UNAUTHORIZED, 'Old password is incorrect');
+    }
+
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update the admin's password
+    admin.password = hashedPassword;
+    await admin.save();
+
+    return { message: 'Password updated successfully' };
+};
+
+
+
+const adminLogout = async (adminId) => {
+    // Find the admin by ID
+    const admin = await Admin.findById(adminId);
+
+    // Check if the admin exists
+    if (!admin) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'Admin not found');
+    }
+
+    // Invalidate the refresh token by removing it from the database (or setting it to null)
+    admin.refreshToken = null;
+    await admin.save();
+
+    return { message: 'Logged out successfully' };
+};
+
+
+const changePassword = async (adminId, currentPassword, newPassword) => {
+
+    const admin = await Admin.findById(adminId);
+    // Check if the admin exists
+    if (!admin || admin.isDeleted) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'Admin not found');
+    }
+
+    // Check if the current password is correct using the schema method
+    const isPasswordValid = await admin.isPasswordCorrect(currentPassword);
+    if (!isPasswordValid) {
+        throw new ApiError(httpStatus.UNAUTHORIZED, 'Current password is incorrect');
+    }
+
+    // Update the admin's password with the new password
+    admin.password = newPassword;  // The pre-save hook will handle hashing
+    await admin.save();
+
+    return admin;
+
+};
+
+
+// Additional Admin-specific functions can be added here... 
 export {
     createAdmin,
     getAllAdmins,
     getAllActiveAdmins,
     getAdminById,
     updateAdminById,
-    softDeleteAdminById
+    softDeleteAdminById,
+    adminLogin,
+    adminLogout,
+    changePassword
 };

@@ -1,19 +1,24 @@
-import * as AdminService from '../../services/admin.service.js';
+import * as RestaurantService from '../../services/restaurant.service.js';
 import { ApiError } from "../../utils/ApiError.js";
 import httpStatus from 'http-status';
 import { ApiResponse } from '../../utils/ApiResponse.js';
 import { asyncHandler } from "../../utils/asyncHandler.js";
+import { Restaurant } from './../../models/restaurant.model';
 
 // Create a new Admin
 const createAdmin = asyncHandler(async (req, res) => {
     const avatarLocalPath = req.file?.path; // Get the path of the uploaded file (if any)
+
     // Validate if avatar image is provided
     if (!avatarLocalPath) {
         throw new ApiError(httpStatus.BAD_REQUEST, "Image file is missing");
     }
 
     // Create the Admin with form data and image
-    const newAdmin = await AdminService.createAdmin(req, avatarLocalPath);
+    const newAdmin = await AdminService.createAdmin({
+        ...req.body, // Spread the request body (including role)
+        avatar: avatarLocalPath // Set the avatar path
+    });
 
 
     return res.status(httpStatus.CREATED).json(
@@ -92,20 +97,20 @@ const adminLogin = asyncHandler(async (req, res, next) => {
 
 // Admin logout - invalidates refresh token
 const adminLogout = asyncHandler(async (req, res) => {
-    const adminId = req.admin.id; // Assuming `req.user` contains the authenticated admin's ID
+    const adminId = req.user.id; // Assuming `req.user` contains the authenticated admin's ID
 
     // Call the adminLogout service function
     const response = await AdminService.adminLogout(adminId);
 
     // Send the response back to the client
     return res.status(httpStatus.OK).json(
-        new ApiResponse(httpStatus.OK, {}, "Logout successful")
+        new ApiResponse(httpStatus.OK, response, "Logout successful")
     );
 });
 
 // Admin password change 
 const changeAdminPassword = asyncHandler(async (req, res) => {
-    const adminId = req.admin.id;
+    const adminId = req.user._id;  // Assuming `req.user` is set through authentication middleware
     const { currentPassword, newPassword } = req.body;
 
     // Validate input
@@ -123,6 +128,7 @@ const changeAdminPassword = asyncHandler(async (req, res) => {
         new ApiResponse(httpStatus.OK, response, 'Password changed successfully')
     );
 });
+
 
 
 

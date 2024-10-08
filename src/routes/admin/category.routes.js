@@ -3,7 +3,7 @@ import * as CategoryController from "../../controllers/admin/category.controller
 import { upload } from "../../middlewares/multer.middleware.js"; // Multer middleware for file upload
 import * as categoryValidation from '../../validations/category.validation.js'; // Validation rules
 import validate from "../../middlewares/validate.js"; // Validation middleware
-import { verifyJWT } from "../../middlewares/users.auth.middleware.js"; // JWT verification middleware
+import { verifyJWT } from "../../middlewares/admin.auth.middleware.js"; // Ensure the path is correct
 
 const router = Router();
 

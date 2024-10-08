@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
-
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 const adminSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -25,16 +26,9 @@ const adminSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        enum: ['Admin', 'Restaurant'],  // 'Admin' for Super Admin, 'Restaurant' for Restaurant Admin
+        enum: ['Admin', 'Restaurant', 'Freanchies'],  // 'Admin' for Super Admin, 'Restaurant' for Restaurant Admin
         default: 'Restaurant',
         required: true,
-    },
-    restaurant: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Restaurant',
-        required: function () {
-            return this.role === 'Restaurant';  // Restaurant admin must be linked to a restaurant
-        },
     },
     fcmToken: {
         type: String,
@@ -48,9 +42,39 @@ const adminSchema = new mongoose.Schema({
         type: Boolean,
         default: false,  // Soft delete flag
     }
-}, {
-    timestamps: true,  // Automatically manage createdAt and updatedAt fields
-});
+},
+    { collection: 'Admin', timestamps: true }
+);
+
+adminSchema.pre("save", async function (next) {
+    if (!this.isModified("password")) return next();
+
+    this.password = await bcrypt.hash(this.password, 10)
+    next()
+})
+
+adminSchema.methods.isPasswordCorrect = async function (password) {
+    return await bcrypt.compare(password, this.password)
+}
+
+// Instance method to generate an access token
+adminSchema.methods.generateAccessToken = function () {
+    return jwt.sign(
+        { _id: this._id, role: this.role },
+        process.env.ACCESS_TOKEN_SECRET,
+        { expiresIn: process.env.ACCESS_TOKEN_EXPIRY || '1d' }
+    );
+};
+
+// Instance method to generate a refresh token
+adminSchema.methods.generateRefreshToken = function () {
+    return jwt.sign(
+        { _id: this._id, role: this.role },
+        process.env.REFRESH_TOKEN_SECRET,
+        { expiresIn: process.env.REFRESH_TOKEN_EXPIRY || '10d' }
+    );
+};
+
 
 // Middleware to filter out soft-deleted admins
 const filterDeleted = function (next) {
@@ -64,6 +88,5 @@ adminSchema.pre('findOne', filterDeleted);
 adminSchema.pre('findOneAndUpdate', filterDeleted);
 adminSchema.pre('findByIdAndUpdate', filterDeleted);
 
-const Admin = mongoose.model('Admin', adminSchema);
+export const Admin = mongoose.model('Admin', adminSchema);
 
-export default Admin;

@@ -8,9 +8,9 @@ const userLogin = {
         phone: Joi.number()
             .required()
             .messages({
-                'string.base': 'Mobile number must be a string',
-                'string.empty': 'Mobile number is required',
-                'any.required': 'Mobile number is required',
+                'string.base': 'phone number must be a string',
+                'string.empty': 'phone number is required',
+                'any.required': 'phone number is required',
             }),
     }),
 };
@@ -20,9 +20,9 @@ const verifyOtp = {
         phone: Joi.string()
             .required()
             .messages({
-                'string.base': 'Mobile number must be a string',
-                'string.empty': 'Mobile number is required',
-                'any.required': 'Mobile number is required',
+                'string.base': 'phone number must be a string',
+                'string.empty': 'phone number is required',
+                'any.required': 'phone number is required',
             }),
         fcmToken: Joi.string()
             .required()

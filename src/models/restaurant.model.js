@@ -6,6 +6,11 @@ const restaurantSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    image: {
+        type: String,
+        required: true,
+        unique: true
+    },
     location: {
         address: {
             type: String,
@@ -35,21 +40,45 @@ const restaurantSchema = new mongoose.Schema({
             }
         }
     },
-    CategoryId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Category',  // Reference to Category schema
-        required: true  // At least one category is required
-    },
+    CategoryId: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Category',
+            required: true
+        }
+    ],
+    tagId: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Tag',
+            required: false
+        }
+    ],
     adminId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Admin',  // Reference to Admin schema
+        ref: 'Admin',
         required: true,
-        unique: true  // Ensure one admin per restaurant
+        unique: true
     }
-}, {
-    timestamps: true,  // Automatically add createdAt and updatedAt fields
-});
+},
+    { collection: 'Restaurant', timestamps: true }
 
-const Restaurant = mongoose.model('Restaurant', restaurantSchema);
+);
 
-export default Restaurant;
+
+
+// Middleware to filter out soft-deleted admins
+const filterDeleted = function (next) {
+    this.where({ isDeleted: false });
+    next();
+};
+
+// Apply the filter to relevant queries
+restaurantSchema.pre('find', filterDeleted);
+restaurantSchema.pre('findOne', filterDeleted);
+restaurantSchema.pre('findOneAndUpdate', filterDeleted);
+restaurantSchema.pre('findByIdAndUpdate', filterDeleted);
+
+
+export const Restaurant = mongoose.model('Restaurant', restaurantSchema);
+

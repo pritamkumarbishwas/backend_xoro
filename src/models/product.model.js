@@ -60,7 +60,7 @@ const productsSchema = new Schema(
             default: false,
         },
     },
-    { collection: 'Products', timestamps: true } // Corrected collection name from 'Category' to 'Products'
+    { collection: 'Product', timestamps: true } // Corrected collection name from 'Category' to 'Products'
 );
 
 // Pre-save hook to capitalize the name

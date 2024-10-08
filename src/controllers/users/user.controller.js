@@ -15,7 +15,7 @@ const userLogin = asyncHandler(async (req, res, next) => {
     if (!otp) {
         throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, "Failed to send OTP");
     }
-
+    
     // Send OTP response
     return res.status(httpStatus.OK).json(
         new ApiResponse(httpStatus.OK, otp, "OTP sent successfully")

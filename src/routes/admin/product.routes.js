@@ -3,7 +3,7 @@ import { upload } from "../../middlewares/multer.middleware.js";
 import * as productValidation from '../../validations/product.validation.js';
 import * as productController from "../../controllers/admin/product.controller.js"; // Ensure the path is correct
 import validate from "../../middlewares/validate.js";
-import { verifyJWT } from "../../middlewares/users.auth.middleware.js"; // Ensure the path is correct
+import { verifyJWT } from "../../middlewares/admin.auth.middleware.js"; // Ensure the path is correct
 
 const router = Router();
 
