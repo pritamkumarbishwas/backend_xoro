@@ -133,7 +133,7 @@ const restaurantSchema = new mongoose.Schema({
 
 // Middleware to filter out soft-deleted restaurants
 const filterDeleted = function (next) {
-    this.where({ isDeleted: false });
+    this.where({ isDeleted: { $ne: true } });
     next();
 };
 

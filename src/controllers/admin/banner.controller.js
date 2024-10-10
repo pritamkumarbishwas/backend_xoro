@@ -1,4 +1,4 @@
-import * as BannerService from '../../services/banner.service.js';
+import * as BannerService from '../../services/admin/banner.service.js';
 import { ApiError } from "../../utils/ApiError.js";
 import httpStatus from 'http-status';
 import { ApiResponse } from '../../utils/ApiResponse.js';

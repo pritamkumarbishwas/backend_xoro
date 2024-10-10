@@ -1,5 +1,5 @@
-import Tag from '../models/tag.model.js';
-import { ApiError } from "../utils/ApiError.js";
+import Tag from '../../models/tag.model.js';
+import { ApiError } from "../../utils/ApiError.js";
 import httpStatus from "http-status";
 
 // Function to create a new Tag

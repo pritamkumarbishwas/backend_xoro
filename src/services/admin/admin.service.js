@@ -1,9 +1,9 @@
-import { Admin } from '../models/admin.model.js';
-import { uploadOnCloudinary } from '../utils/cloudinary.js';
-import { ApiError } from '../utils/ApiError.js';
+import { Admin } from '../../models/admin.model.js';
+import { uploadOnCloudinary } from '../../utils/cloudinary.js';
+import { ApiError } from '../../utils/ApiError.js';
 import httpStatus from 'http-status';
 import bcrypt from "bcrypt"
-import { generateAdminAccessAndRefreshTokens } from "../utils/tokenUtils.js";
+import { generateAdminAccessAndRefreshTokens } from "../../utils/tokenUtils.js";
 
 // Helper function to check for email or phone uniqueness
 const checkUniqueFields = async (email, phone, excludeId = null) => {

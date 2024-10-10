@@ -3,7 +3,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import userRouter from './routes/users/index.routes.js'; // Correct path to index.routes.js
 import adminRouter from './routes/admin/index.routes.js'; // Correct path to index.routes.js
-// import restaurantRouter from './routes/restaurant/index.routes.js'; // Correct path to index.routes.js
+import restaurantRouter from './routes/restaurant/index.routes.js'; // Correct path to index.routes.js
 
 const app = express();
 
@@ -22,7 +22,7 @@ app.use("/api/v1/users", userRouter);
 
 
 // Mount the user routes at /api/v1
-// app.use("/api/v1/restaurant", restaurantRouter);
+app.use("/api/v1/restaurants", restaurantRouter);
 
 
 // Mount the user routes at /api/v1

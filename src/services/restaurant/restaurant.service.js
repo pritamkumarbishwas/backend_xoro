@@ -1,11 +1,11 @@
-import { Restaurant } from '../models/restaurant.model.js';
-import { Admin } from '../models/admin.model.js';
-import { uploadOnCloudinary } from '../utils/cloudinary.js';
-import { ApiError } from '../utils/ApiError.js';
+import { Restaurant } from '../../models/restaurant.model.js';
+import { Admin } from '../../models/admin.model.js';
+import { uploadOnCloudinary } from '../../utils/cloudinary.js';
+import { ApiError } from '../../utils/ApiError.js';
 import httpStatus from 'http-status';
 import bcrypt from "bcrypt";
 
-import { generateAdminAccessAndRefreshTokens } from "../utils/tokenUtils.js";
+import { generateAdminAccessAndRefreshTokens } from "../../utils/tokenUtils.js";
 
 // Helper function to check for email or phone uniqueness
 const checkUniqueFields = async (email, phone, excludeId = null) => {
@@ -100,6 +100,7 @@ const getAllActiveRestaurants = async () => {
 
 // Function to fetch an Restaurant by ID (excluding deleted)
 const getRestaurantById = async (id) => {
+    console.log(id);
     const restaurant = await Restaurant.findById(id).populate('adminId'); // Populate restaurant details if applicable
 
     // Check if Restaurant exists
@@ -182,8 +183,8 @@ const softDeleteRestaurantById = async (id) => {
 
 const restaurantLogin = async (email, password) => {
     // Find the Restaurant by email
-    const restaurant = await Admin.findOne({ email, isDeleted: false });
-
+    const restaurant = await Admin.findOne({ email });
+    console.log(restaurant);
     // Check if the Restaurant exists
     if (!restaurant) {
         throw new ApiError(httpStatus.UNAUTHORIZED, 'Invalid email or password');
@@ -292,7 +293,7 @@ const updateAddress = async (id, data) => {
 };
 
 
-// 
+// update opening Hours
 const updateOpeningHours = async (id, data) => {
     const { openingHours } = data;
     // Find the Restaurant associated with the Admin ID

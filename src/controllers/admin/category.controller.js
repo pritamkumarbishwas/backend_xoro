@@ -1,4 +1,4 @@
-import * as CategoryService from '../../services/category.service.js';
+import * as CategoryService from '../../services/admin/category.service.js';
 import { ApiError } from "../../utils/ApiError.js";
 import httpStatus from 'http-status';
 import { ApiResponse } from '../../utils/ApiResponse.js';

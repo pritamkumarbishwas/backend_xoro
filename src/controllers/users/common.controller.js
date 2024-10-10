@@ -1,5 +1,5 @@
-import { getAllActiveBanners } from '../../services/banner.service.js';
-import { getAllActiveCategory } from '../../services/category.service.js';
+import { getAllActiveBanners } from '../../services/admin/banner.service.js';
+import { getAllActiveCategory } from '../../services/admin/category.service.js';
 import { ApiError } from "../../utils/ApiError.js";
 import httpStatus from 'http-status';
 import { ApiResponse } from '../../utils/ApiResponse.js';

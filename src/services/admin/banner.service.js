@@ -1,6 +1,6 @@
-import { Banners } from '../models/banner.model.js';
-import { uploadOnCloudinary } from "../utils/cloudinary.js"; // Assuming you have a utility for Cloudinary
-import { ApiError } from "../utils/ApiError.js";
+import { Banners } from '../../models/banner.model.js';
+import { uploadOnCloudinary } from "../../utils/cloudinary.js"; // Assuming you have a utility for Cloudinary
+import { ApiError } from "../../utils/ApiError.js";
 import httpStatus from "http-status";
 
 // Function to create a new banner

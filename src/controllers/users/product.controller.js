@@ -1,5 +1,5 @@
 // src/controllers/admin/product.controller.js
-import { getAllActiveProducts } from '../../services/product.service.js';
+import { getAllActiveProducts } from '../../services/admin/product.service.js';
 import { ApiError } from "../../utils/ApiError.js";
 import httpStatus from 'http-status';
 import { ApiResponse } from '../../utils/ApiResponse.js';

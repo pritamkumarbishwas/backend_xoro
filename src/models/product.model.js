@@ -40,14 +40,14 @@ const productsSchema = new Schema(
             default: 0,
             min: 0, // Added minimum value for discount
         },
-        addedBy: {
+        adminId: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'User',
+            ref: 'Admin',
             required: true,
         },
         updatedBy: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'User',
+            ref: 'Admin',
             default: null,
         },
         status: {

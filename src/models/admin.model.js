@@ -78,7 +78,7 @@ adminSchema.methods.generateRefreshToken = function () {
 
 // Middleware to filter out soft-deleted admins
 const filterDeleted = function (next) {
-    this.where({ isDeleted: false });
+    this.where({ isDeleted: { $ne: true } });
     next();
 };
 

@@ -1,4 +1,4 @@
-import * as ProductService from '../../services/admin/product.service.js';
+import * as ProductService from '../../services/restaurant/product.service.js';
 import { ApiError } from "../../utils/ApiError.js";
 import httpStatus from 'http-status';
 import { ApiResponse } from '../../utils/ApiResponse.js';
@@ -27,7 +27,7 @@ const createProduct = asyncHandler(async (req, res) => {
 
 // Fetch all active products
 const getAllProducts = asyncHandler(async (req, res) => {
-    const products = await ProductService.getAllProducts();
+    const products = await ProductService.getAllProducts(req);
 
     return res.status(httpStatus.OK).json(
         new ApiResponse(httpStatus.OK, products, "Products fetched successfully")

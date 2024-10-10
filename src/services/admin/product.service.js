@@ -1,6 +1,6 @@
-import Product from '../models/product.model.js';
-import { uploadOnCloudinary } from "../utils/cloudinary.js";
-import { ApiError } from "../utils/ApiError.js";
+import Product from '../../models/product.model.js';
+import { uploadOnCloudinary } from "../../utils/cloudinary.js";
+import { ApiError } from "../../utils/ApiError.js";
 import httpStatus from "http-status";
 
 

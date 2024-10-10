@@ -1,6 +1,6 @@
-import Category from '../models/category.model.js';
-import { uploadOnCloudinary } from "../utils/cloudinary.js";
-import { ApiError } from "../utils/ApiError.js";
+import Category from '../../models/category.model.js';
+import { uploadOnCloudinary } from "../../utils/cloudinary.js";
+import { ApiError } from "../../utils/ApiError.js";
 import httpStatus from "http-status";
 
 // Function to create a new category with an image

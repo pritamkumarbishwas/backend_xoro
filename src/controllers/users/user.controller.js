@@ -1,7 +1,7 @@
 import { ApiError } from "../../utils/ApiError.js";
 import httpStatus from 'http-status';
 import { ApiResponse } from '../../utils/ApiResponse.js';
-import * as UserService from '../../services/user.service.js';
+import * as UserService from '../../services/admin/user.service.js';
 import { asyncHandler } from "../../utils/asyncHandler.js";
 
 // User login - generates OTP

@@ -1,4 +1,4 @@
-import * as AdminService from '../../services/admin.service.js';
+import * as AdminService from '../../services/admin/admin.service.js';
 import { ApiError } from "../../utils/ApiError.js";
 import httpStatus from 'http-status';
 import { ApiResponse } from '../../utils/ApiResponse.js';
