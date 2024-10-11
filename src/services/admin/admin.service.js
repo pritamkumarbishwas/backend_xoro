@@ -136,7 +136,7 @@ const softDeleteAdminById = async (id) => {
 
 const adminLogin = async (email, password) => {
     // Find the admin by email
-    const admin = await Admin.findOne({ email, isDeleted: false });
+    const admin = await Admin.findOne({ email});
 
     // Check if the admin exists
     if (!admin) {
