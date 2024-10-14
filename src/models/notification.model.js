@@ -16,6 +16,15 @@ const notificationSchema = new Schema(
       type: String,
       default: '',
     },
+    priority: {
+      type: String,
+      enum: ['SMS', 'WHATSAPP', 'NOTIFICATION'],
+      required: true,
+    },
+    phone: [{
+      type: String,
+      required: true,
+    }],
     userIds: [{
       type: Schema.Types.ObjectId,
       ref: 'User',

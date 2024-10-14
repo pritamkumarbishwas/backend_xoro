@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const sendNotification = async (tokens, notification, data) => {
+export const sendNotification = async (tokens, notification, data) => {
   const fcmServerKey = process.env.FCM_SERVER_KEY;
 
   const notificationData = {
@@ -27,4 +27,3 @@ const sendNotification = async (tokens, notification, data) => {
   }
 };
 
-export default sendNotification;
