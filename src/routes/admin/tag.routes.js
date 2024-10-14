@@ -7,18 +7,18 @@ import { verifyJWT } from "../../middlewares/admin.auth.middleware.js"; // Ensur
 const router = Router();
 
 // Route to fetch all tags
-router.get("/tags", TagController.getAllTags);
+router.get("/tags",verifyJWT, TagController.getAllTags);
 
 // Route to fetch a single tag by ID
-router.get("/tags/:id", validate(tagValidation.getTagById), TagController.getTagById);
+router.get("/tags/:id",verifyJWT, validate(tagValidation.getTagById), TagController.getTagById);
 
 // Route to create a new tag (POST)
-router.post("/tags", validate(tagValidation.createTag), TagController.createTag);
+router.post("/tags",verifyJWT, validate(tagValidation.createTag), TagController.createTag);
 
 // Route to update an existing tag (PUT)
-router.put("/tags/:id", validate(tagValidation.updateTagById), TagController.updateTagById);
+router.put("/tags/:id",verifyJWT, validate(tagValidation.updateTagById), TagController.updateTagById);
 
 // Route to soft delete a tag by ID (DELETE)
-router.delete("/tags/:id", validate(tagValidation.softDeleteTagById), TagController.softDeleteTagById);
+router.delete("/tags/:id",verifyJWT, validate(tagValidation.softDeleteTagById), TagController.softDeleteTagById);
 
 export default router;

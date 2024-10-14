@@ -5,7 +5,7 @@ import httpStatus from "http-status";
 
 // Function to create a new banner
 const createBanner = async (data, avatarLocalPath) => {
-    const { status } = data;
+    const { status,restaurantId,productId } = data;
 
     if (!status) {
         throw new ApiError(httpStatus.BAD_REQUEST, "Missing status in request body");
@@ -21,6 +21,8 @@ const createBanner = async (data, avatarLocalPath) => {
     // Add the Cloudinary URL to the banner data
     const bannerData = {
         status,
+        restaurantId,
+        productId,
         image: avatar.url,  // Assuming you're storing the avatar URL in the banner
     };
 
