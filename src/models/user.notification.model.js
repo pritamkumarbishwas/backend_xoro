@@ -15,8 +15,7 @@ const userNotificationsSchema = new Schema(
     email: {
       type: String,
       required: true,
-      unique: true,
-      trim: true, // Optional: removes whitespace from the email
+      trim: true,
     },
     adminId: {
       type: Schema.Types.ObjectId,
@@ -34,7 +33,7 @@ const userNotificationsSchema = new Schema(
   },
   {
     collection: 'UserNotifications',
-    timestamps: true, // Automatically adds createdAt and updatedAt timestamps
+    timestamps: true, 
   }
 );
 

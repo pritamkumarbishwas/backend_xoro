@@ -90,8 +90,14 @@ const importUserNotification = async (adminId, filePath) => {
             fs.createReadStream(filePath)
                 .pipe(csv())
                 .on('data', (data) => {
+                    // Convert keys to lowercase
+                    const formattedData = {};
+                    Object.keys(data).forEach(key => {
+                        formattedData[key.toLowerCase()] = data[key];
+                    });
+
                     // Add adminId to each notification
-                    notifications.push({ ...data, adminId });
+                    notifications.push({ ...formattedData, adminId });
                 })
                 .on('end', async () => {
                     try {
@@ -114,8 +120,18 @@ const importUserNotification = async (adminId, filePath) => {
         const worksheet = workbook.Sheets[sheetName];
         const data = xlsx.utils.sheet_to_json(worksheet);
 
+        // Convert column names to lowercase
+        const formattedData = data.map(item => {
+            const newItem = {};
+            Object.keys(item).forEach(key => {
+                newItem[key.toLowerCase()] = item[key];
+            });
+            return newItem;
+        });
+
+
         // Add adminId to each notification
-        data.forEach(item => notifications.push({ ...item, adminId }));
+        formattedData.forEach(item => notifications.push({ ...item, adminId }));
 
         try {
             const savedNotifications = await UserNotifications.insertMany(notifications);
@@ -124,6 +140,7 @@ const importUserNotification = async (adminId, filePath) => {
             throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Failed to save notifications');
         }
     }
+
 
     throw new ApiError(httpStatus.BAD_REQUEST, 'Unsupported file type');
 };

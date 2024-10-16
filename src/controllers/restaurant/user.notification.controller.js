@@ -72,15 +72,15 @@ const importUserNotification = asyncHandler(async (req, res) => {
         throw new ApiError(httpStatus.BAD_REQUEST, "File is missing");
     }
 
-    try {
+    // try {
         // Call the service function to import user notifications
         const response = await UserNotificationService.importUserNotification(adminId, filePath);
         return res.status(httpStatus.OK).json(
             new ApiResponse(httpStatus.OK, response, "User notifications imported successfully")
         );
-    } catch (error) {
-        throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, error.message);
-    }
+    // } catch (error) {
+    //     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, error.message);
+    // }
 });
 
 

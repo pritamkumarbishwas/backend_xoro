@@ -23,6 +23,6 @@ router.put("/user_notifications/:id", verifyJWT, validate(userNotificationValida
 router.delete("/user_notifications/:id", verifyJWT, validate(userNotificationValidation.softDeleteUserNotificationById), userNotificationController.softDeleteUserNotificationById);
 
 // Route to import user notifications (POST)
-router.post("/user_notifications/import", verifyJWT, upload.single("sheet"), validate(userNotificationValidation.importUserNotification), userNotificationController.importUserNotification);
+router.post("/user_notifications/import", verifyJWT, upload.single("sheet"), userNotificationController.importUserNotification);
 
 export default router;
