@@ -1,7 +1,7 @@
 import Joi from 'joi';
 
-// Validation schema for creating a coupon
-const createCoupon = {
+// Validation schema for creating a Voucher
+const createVoucher = {
     body: Joi.object().keys({
         title: Joi.string().required(),
         description: Joi.string().required(),
@@ -14,21 +14,22 @@ const createCoupon = {
     }),
 };
 
-// Validation schema for fetching a coupon by ID
+
+// Validation schema for fetching a Voucher by ID
 const getById = {
     params: Joi.object().keys({
         id: Joi.string().hex().length(24).required(),
     }),
 };
 
-// Validation schema for redeeming a coupon
+// Validation schema for redeeming a Voucher
 const redeem = {
     body: Joi.object().keys({
-        couponCode: Joi.string().required(),
+        voucherCode: Joi.string().required(),
     }),
 };
 
-// Validation schema for updating a coupon by ID
+// Validation schema for updating a Voucher by ID
 const updateById = {
     params: Joi.object().keys({
         id: Joi.string().hex().length(24).required(),
@@ -44,7 +45,7 @@ const updateById = {
     }),
 };
 
-// Validation schema for updating a coupon's expiry date
+// Validation schema for updating a Voucher's expiry date
 const updateExpiryDateById = {
     params: Joi.object().keys({
         id: Joi.string().hex().length(24).required(),
@@ -54,7 +55,7 @@ const updateExpiryDateById = {
     }),
 };
 
-// Validation schema for soft deleting a coupon by ID
+// Validation schema for soft deleting a Voucher by ID
 const softDeleteById = {
     params: Joi.object().keys({
         id: Joi.string().hex().length(24).required(),
@@ -62,7 +63,7 @@ const softDeleteById = {
 };
 
 export {
-    createCoupon,
+    createVoucher,
     getById,
     updateById,
     updateExpiryDateById,

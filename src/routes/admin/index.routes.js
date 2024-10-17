@@ -11,7 +11,7 @@ import giftCardCategoryRoute from "../admin/gift.card.category.routes.js";
 import giftCard from "../admin/gift.card.routes.js";
 import adminRouter from "./admin.routes.js";
 import couponRoute from "./coupon.routes.js";
-
+import voucherRoute from "./voucher.routes.js";
 const router = Router();
 
 // Mount the admin
@@ -26,6 +26,7 @@ router.use("/", privacyPolicyRoute);
 router.use("/", giftCardCategoryRoute);
 router.use("/", giftCard);
 router.use("/", couponRoute);
+router.use("/", voucherRoute);
 router.use("/", adminRouter);
 
 export default router;
