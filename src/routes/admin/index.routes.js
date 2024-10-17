@@ -10,7 +10,7 @@ import privacyPolicyRoute from "../admin/privacy.policy.routes.js";
 import giftCardCategoryRoute from "../admin/gift.card.category.routes.js";
 import giftCard from "../admin/gift.card.routes.js";
 import adminRouter from "./admin.routes.js";
-
+import couponRoute from "./coupon.routes.js";
 
 const router = Router();
 
@@ -25,6 +25,7 @@ router.use("/", termConditionRoute);
 router.use("/", privacyPolicyRoute);
 router.use("/", giftCardCategoryRoute);
 router.use("/", giftCard);
+router.use("/", couponRoute);
 router.use("/", adminRouter);
 
 export default router;

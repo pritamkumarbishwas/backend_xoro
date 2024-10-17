@@ -16,6 +16,6 @@ router.get("/gift_cards/:id", verifyJWT, validate(giftCardValidation.getById), g
 router.post("/gift_cards", verifyJWT, validate(giftCardValidation.createUserGiftCard), giftCardController.createGiftCard);
 
 // New route to redeem a gift card
-router.post("/gift_cards/:id/redeem", verifyJWT, validate(giftCardValidation.redem), giftCardController.redeemGiftCard);
+router.post("/gift_cards/redeem", verifyJWT, validate(giftCardValidation.redem), giftCardController.redeemGiftCard);
 
 export default router;

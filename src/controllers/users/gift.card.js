@@ -43,12 +43,14 @@ const getById = asyncHandler(async (req, res) => {
 
 // Fetching all GiftCards
 const redeemGiftCard = asyncHandler(async (req, res) => {
-    const userId = req.user._id;
-    // Fetch gift cards from the service
-    const giftCards = await giftCardService.redeem(req.params.id, userId);
+    const userId = req.user._id; // Get the user ID from the authenticated request
+    const { giftCardCode, pin } = req.body; // Extract gift card code and PIN from the request body
+    
+    // Fetch gift card details from the service layer
+    const redeemedGiftCard = await giftCardService.redeem(giftCardCode, pin, userId);
 
     return res.status(httpStatus.OK).json(
-        new ApiResponse(httpStatus.OK, giftCards, "GiftCards Redeem successfully.")
+        new ApiResponse(httpStatus.OK, redeemedGiftCard, "Gift card redeemed successfully.")
     );
 });
 

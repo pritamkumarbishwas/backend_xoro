@@ -9,12 +9,13 @@ const giftCardSchema = new Schema(
         code: {
             type: String,
             unique: true,
+            match: /^[A-Z0-9-]+$/,
         },
         pin: {
             type: String,
             validate: {
                 validator: function (v) {
-                    return /^\d{6}$/.test(v); 
+                    return /^\d{6}$/.test(v);
                 },
                 message: (props) => `${props.value} is not a valid 6-digit PIN!`,
             },
@@ -25,6 +26,11 @@ const giftCardSchema = new Schema(
             min: 0, // Ensures value is non-negative
         },
         userId: {
+            type: Schema.Types.ObjectId,
+            ref: 'User',
+            required: false, // Optional, as a gift card might not be associated with a user initially
+        },
+        redeemedBy: {
             type: Schema.Types.ObjectId,
             ref: 'User',
             required: false, // Optional, as a gift card might not be associated with a user initially
@@ -41,7 +47,7 @@ const giftCardSchema = new Schema(
         },
         status: {
             type: String,
-            enum: ['Active', 'Redeemed', 'Expired'],
+            enum: ['Active', 'Block', 'Redeemed', 'Expired'],
             default: 'Active', // Default status when a gift card is created
         },
         expiryDate: {
@@ -52,6 +58,14 @@ const giftCardSchema = new Schema(
                 return currentDate; // Return the new date
             },
         },
+        redeemedDate: {
+            type: Date,
+            default: null,
+        },
+        isDeleted: {
+            type: Boolean,
+            default: false,
+        },
     },
     {
         collection: 'GiftCard',
@@ -59,17 +73,28 @@ const giftCardSchema = new Schema(
     }
 );
 
-// Generate a unique gift card code
+
+// Generate a unique coupon code
 const generateUniqueCode = async function () {
     let code;
     let isUnique = false;
+
     while (!isUnique) {
-        code = nanoid(16); // Generates a random 16-character code
+        // Generate a random code with the desired format
+        const part1 = nanoid(4).toUpperCase().replace(/[^A-Z0-9]/g, ''); // First part (3 characters)
+        const part2 = nanoid(4).toUpperCase().replace(/[^A-Z]/g, '');  // Second part (3 uppercase letters)
+        const part3 = nanoid(6).toUpperCase().replace(/[^A-Z0-9]/g, ''); // Third part (6 characters)
+
+        // Combine parts with hyphens to create the final code
+        code = `${part1}-${part2}-${part3}`; // Combine parts with hyphens
+
+        // Check if the generated code already exists
         const existingCode = await GiftCard.findOne({ code });
         if (!existingCode) {
             isUnique = true; // Ensure the generated code is unique
         }
     }
+
     return code;
 };
 
@@ -102,5 +127,18 @@ giftCardSchema.pre('save', async function (next) {
     // Proceed to save
     next();
 });
+
+
+// Middleware to filter out deleted notifications
+const filterDeleted = function (next) {
+    this.where({ isDeleted: { $ne: true } });
+    next();
+};
+
+// Apply the filterDeleted middleware to all find operations
+giftCardSchema.pre('find', filterDeleted);
+giftCardSchema.pre('findOne', filterDeleted);
+giftCardSchema.pre('findOneAndUpdate', filterDeleted);
+giftCardSchema.pre('findById', filterDeleted);
 
 export const GiftCard = model('GiftCard', giftCardSchema);

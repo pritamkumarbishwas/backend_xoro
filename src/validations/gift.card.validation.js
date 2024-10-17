@@ -25,8 +25,9 @@ const getById = {
 };
 // Validation schema for fetching a gift card by ID
 const redem = {
-    params: Joi.object().keys({
-        id: Joi.string().hex().length(24).required(),
+    body: Joi.object().keys({
+        giftCardCode: Joi.string().required(),
+        pin: Joi.string().required(),
     }),
 };
 

@@ -46,35 +46,45 @@ const getById = async (id) => {
 };
 
 
-const redeem = async (id, userId) => {
-    // Find the gift card by ID
-    const giftCard = await GiftCard.findById(id);
 
+const redeem = async (giftCardCode, pin, userId) => {
+    // Find the gift card by code
+    const giftCard = await GiftCard.findOne({ code: giftCardCode });
+
+    // Check if the gift card exists
     if (!giftCard) {
-        throw new ApiError(httpStatus.NOT_FOUND, "GiftCard not found.");
+        throw new ApiError(httpStatus.NOT_FOUND, "Gift card not found.");
     }
 
-    // Check if the gift card is already redeemed
+    // Verify the pin (adjust based on how the pin is stored and compared)
+    // If the pin is hashed in the database, compare it using a hash function (e.g., bcrypt)
+    if (giftCard.pin !== pin) {
+        throw new ApiError(httpStatus.BAD_REQUEST, "Invalid PIN.");
+    }
+
+    // Check the status of the gift card
+    if (giftCard.status == 'Block') {
+        throw new ApiError(httpStatus.BAD_REQUEST, "Gift card is not active.");
+    }
+
+    // Check if the gift card has already been redeemed
     if (giftCard.status === 'Redeemed') {
-        throw new ApiError(httpStatus.BAD_REQUEST, "GiftCard is already redeemed.");
-    }
-
-    // Check if the gift card is active
-    if (giftCard.status !== 'Active') {
-        throw new ApiError(httpStatus.BAD_REQUEST, "GiftCard cannot be redeemed as it is not active.");
+        throw new ApiError(httpStatus.BAD_REQUEST, "Gift card has already been redeemed.");
     }
 
     // Check if the gift card has expired
     const currentDate = new Date();
     if (currentDate > giftCard.expiryDate) {
-        throw new ApiError(httpStatus.BAD_REQUEST, "GiftCard has expired and cannot be redeemed.");
+        throw new ApiError(httpStatus.BAD_REQUEST, "Gift card has expired and cannot be redeemed.");
     }
 
     // Redeem the gift card
-    giftCard.status = 'Redeemed';
-    giftCard.userId = userId; // Optionally associate it with the user who redeemed it
-    await giftCard.save();
+    giftCard.status = 'Redeemed'; // Update the status to Redeemed
+    giftCard.redeemedBy = userId; // Store the user ID who redeemed the gift card (if applicable)
+    giftCard.redeemedDate = currentDate; // Optionally store the redemption date
+    await giftCard.save(); // Save the updated gift card
 
+    // Return relevant information after redemption
     return giftCard;
 };
 

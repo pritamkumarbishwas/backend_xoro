@@ -4,6 +4,7 @@ import commonRoute from './common.routes.js';
 import productRoute from './product.routes.js';
 import transactionRoute from './user.wallet.transaction.routes.js';
 import giftCardRoute from './gift.card.routes.js';
+import couponRoute from './coupon.routes.js';
 
 const router = Router();
 
@@ -13,5 +14,6 @@ router.use("/", commonRoute);
 router.use("/", productRoute);
 router.use("/", transactionRoute);
 router.use("/", giftCardRoute);
+router.use("/", couponRoute);
 
 export default router;
