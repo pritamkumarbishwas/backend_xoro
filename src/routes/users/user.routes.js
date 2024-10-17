@@ -7,11 +7,12 @@ import { upload } from "../../middlewares/multer.middleware.js"
 
 const router = Router();
 
-// Route for user registration // 
+// Route for user registration
+
 router.route("/login").post(validate(userValidation.userLogin), userController.userLogin);
 router.route("/verify_otp").post(validate(userValidation.verifyOtp), userController.otpVerify);
 router.route("/avatar").patch(verifyJWT, upload.single("avatar"), userController.updateUserAvatar);
-router.route("/profile").post(verifyJWT,validate(userValidation.updateProfile), userController.updateProfile);
+router.route("/profile").post(verifyJWT, validate(userValidation.updateProfile), userController.updateProfile);
 
 // You can add more routes below as needed
 
