@@ -62,12 +62,12 @@ const userSchema = new Schema(
                     type: String,
                     default: null,
                 },
-                addressTitle: { // Work, Home, Current location
+                addressTitle: {
                     type: String,
                     default: null,
                 },
                 zipCode: {
-                    type: String, // Changed to String to handle leading zeroes
+                    type: String,
                     default: null,
                 }
             }
@@ -153,9 +153,9 @@ userSchema.pre('findById', excludeDeleted);
 // Instance method to generate an access token
 userSchema.methods.generateAccessToken = function () {
     return jwt.sign(
-        { _id: this._id }, // Payload with user ID
-        process.env.ACCESS_TOKEN_SECRET, // Secret for signing the token
-        { expiresIn: process.env.ACCESS_TOKEN_EXPIRY } // Expiration time
+        { _id: this._id },
+        process.env.ACCESS_TOKEN_SECRET,
+        { expiresIn: process.env.ACCESS_TOKEN_EXPIRY }
     );
 };
 
