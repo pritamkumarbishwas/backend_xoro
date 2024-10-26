@@ -6,12 +6,6 @@ import httpStatus from "http-status";
 const createTask = async (data) => {
     const { title, description, status } = data;
 
-    const existingTask = await Task.findOne({ title });
-
-    if (existingTask) {
-        throw new ApiError(httpStatus.CONFLICT, "Task already exists.");
-    }
-
     // Prepare Task data
     const taskData = {
         title,
